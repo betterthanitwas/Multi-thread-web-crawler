@@ -2,11 +2,9 @@ from threading import Thread, Lock
 from queue import Queue
 from urllib.parse import urlparse
 
-# TODO this should be a function that takes a domain and a UrlQueue and starts crawling that domain
-crawlerThread = None
-
 class UrlQueue:
-    def __init__(self):
+    def __init__(self, startCrawlerThread):
+        self.startCrawlerThread = startCrawlerThread
         self.queues = {}
         self.lock = Lock()
 
@@ -15,7 +13,7 @@ class UrlQueue:
             domain = urlparse(url).hostname
             if not domain in self.queues:
                 self.queues[domain] = Queue()
-                Thread(None, crawlerThread, domain, (domain, self)).start()
+                Thread(None, self.startCrawlerThread, domain, (domain)).start()
             self.queues[domain].put(url)
 
     # Returns either a URL or None. If it returns None, the calling thread should terminate.
