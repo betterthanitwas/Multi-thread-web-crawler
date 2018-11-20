@@ -1,6 +1,6 @@
 class DataStore:
-    # Takes two strings and a dictionary that goes from strings to ints
-    def indexPage(url, title, wordCounts): pass
+    # (url, title, Dict<word, (wordCount, excerpt)>) -> Void
+    def indexPage(url, title, words): pass
 
-    # Takes a list of words, returns a list of (url, title) tuples
+    # List<word> -> List<(url, title, excerpt)>
     def search(words): pass
