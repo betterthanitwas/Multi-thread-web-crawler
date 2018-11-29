@@ -29,3 +29,6 @@ def crawler_thread(domain):
                         queue.add_url(next_link)
 
 queue = UrlQueue(crawler_thread)
+queue.add_url("https://en.wikipedia.org/wiki/Main_Page")
+queue.add_url("https://stackoverflow.com/")
+queue.add_url("http://people.nnu.edu/blmyers/")
