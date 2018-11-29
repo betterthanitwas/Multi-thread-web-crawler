@@ -21,7 +21,7 @@ class UrlQueue:
 
     # Returns either a URL or None. If it returns None, the calling thread should terminate.
     def take_url(self, domain):
-        with self.lock:`
+        with self.lock:
             if self.queues[domain].empty(): 
                 del self.queues[domain]
                 return None
