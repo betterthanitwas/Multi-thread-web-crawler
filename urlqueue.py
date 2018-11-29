@@ -7,16 +7,16 @@ class UrlQueue:
         self.start_crawler_thread = start_crawler_thread
         self.queues = {}
         self.lock = Lock()
-        self.visited_link = set()
+        self.visited_links = set()
 
     def add_url(self, url):
         with self.lock:
-            if url not in self.visited_link:
-                sef.visited_link = set.add(url)
+            if url not in self.visited_links:
+                self.visited_links.add(url)
                 domain = urlparse(url).hostname
                 if not domain in self.queues:
                     self.queues[domain] = Queue()
-                    Thread(None, self.start_crawler_thread, domain, (domain)).start()
+                    Thread(None, self.start_crawler_thread, domain, (domain,)).start()
                 self.queues[domain].put(url)
 
     # Returns either a URL or None. If it returns None, the calling thread should terminate.
