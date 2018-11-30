@@ -1,10 +1,7 @@
 from html import escape
 import re
 
-word_regex = re.compile(r"\w+")
-
-def render_html(results, search):
-    search_words = set(word_regex.findall(search.lower()))
+def render_html(results, search, search_words):
     bold_regex = re.compile(fr"\b({'|'.join(re.escape(escape(word)) for word in search_words)})\b", re.IGNORECASE)
     def bold_search_terms(string):
         return bold_regex.sub(r"<mark>\1</mark>", string)

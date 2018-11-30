@@ -1,5 +1,10 @@
 from flask import Flask, request
+from datastore import DataStore
 from renderhtml import render_html
+import re
+
+data_store = DataStore('localhost', 'webcrawl', 'root', '')
+data_store.connect()
 
 app = Flask(__name__)
 
@@ -11,10 +16,13 @@ def get_index():
 def get_opensearch():
     return app.send_static_file('opensearch.xml')
 
+word_regex = re.compile(r"\w+")
+
 @app.route('/search')
 def get_query():
-    fake_results = [('https://google.com', 'Google', 'These are actually fake search results.'), ('<script>', '<script>Security test', '<script>alert("Security test")')]
-    return render_html(fake_results, request.args['q'])
+    search_words = set(word_regex.findall(request.args['q'].lower()))
+    results = data_store.search(search_words)
+    return render_html(results, request.args['q'], search_words)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
