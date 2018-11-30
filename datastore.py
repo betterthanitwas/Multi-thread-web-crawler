@@ -14,7 +14,9 @@ class DataStore:
 							'test2': (10, "this test2 : excerpt")}
 				ds.indexPage(url, title, dictWord)
 				wordList = ['test1', 'test2']
-				ds.search(wordList)
+				r = ds.search(wordList)
+				for t in r:
+					print(t)
 		
 				ds.closeConnection()
 		'''
@@ -107,9 +109,10 @@ class DataStore:
 	# List<word> -> List<(url, title, excerpt)>
 	def search(self, words):
 		""" Inputs are a list of words
-			Returns list of sets if no problem, 
-			1 if error storing info, 
-			2 if database is not connected
+			Returns:
+				list of tuples if no problem (maybe empty if words arent in db...), 
+				list containing '1' and the error if error storing info, 
+				list containing '2' and 'Db not connected' if database is not connected
 		"""
 		# check connection
 		if self.conn.is_connected():			
@@ -126,8 +129,8 @@ class DataStore:
 
 					# add result to return list 
 					for result in self.cursorRetrieve.stored_results():
-						print(result.fetchall())
-						#retList.append(result)
+						#print(result.fetchall())
+						retList.append(tuple(result))
 
 				''' DO THIS SECOND
 				# pass list of words to database
@@ -142,11 +145,11 @@ class DataStore:
 				return retList
 
 			except mysql.connector.Error as err:
-				print(err)
-				return 1 # maybe return error code...
+				rList = [1, err]
+				return rList # maybe return error code...
 		else:
-			print("Db not connected")
-			return 2
+			rList = [2, "Db not connected"]
+			return rList
 
 		
 	def closeConnection(self):
