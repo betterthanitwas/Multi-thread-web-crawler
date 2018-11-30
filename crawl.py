@@ -22,6 +22,8 @@ def crawler_thread(domain):
             r  = requests.get(url)
             data = r.text
             soup = BeautifulSoup(data, features="html.parser")
+            for non_text in soup.find_all(['script', 'style']):
+                non_text.decompose()
             title = soup.title.string if soup.title else url
             words = indexer.index_text(soup.get_text())
             data_store.indexPage(url, title, words)
