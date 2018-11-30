@@ -1,11 +1,12 @@
 import mysql.connector
 from mysql.connector import errorcode
+from python_mysql_dbconfig import read_db_config
 
 class DataStore:
-	def __init__(self, h, db, u, pwd):
+	def __init__(self, configFile):
 		'''
 		Example:
-			ds = DataStore('localhost', 'webcrawl', 'temp', 'password')
+			ds = DataStore('config.ini')
 			retVal = ds.connect()
 			if retVal == 0:
 				url = 'www.Thisisatest.com'
@@ -20,27 +21,22 @@ class DataStore:
 		
 				ds.closeConnection()
 		'''
-		self.host = h
-		self.database = db
-		self.user = u
-		self.password = pwd
+		self.db_config = read_db_config(configFile)
+
 
 	def connect(self):
 		""" 
 			Returns 0 if no problem, 1 if error connecting to database
 		"""
 		try:
-			# create connection
-			self.conn = mysql.connector.connect(host= self.host,database=self.database,user=self.user,password=self.password)
+			# create connection pool implicitly
+			self.conn = mysql.connector.connect(pool_name="thePool",
+												pool_size=5, # 5 is the default
+												**self.db_config)
 			if self.conn.is_connected():
 				print('connection established.')
 			else:
 				print('connection failed.')
-
-			# create a cursor to call procedures
-			self.cursorUrl = self.conn.cursor()
-			self.cursorWord = self.conn.cursor()
-			self.cursorRetrieve = self.conn.cursor()
 
 			# turn off autocommit
 			self.autocommit = False
@@ -56,11 +52,15 @@ class DataStore:
 				print(err)
 			return 1 # maybe return error code...
 
+
 	# (url, title, Dict<word: (wordCount, excerpt)>) -> Int
 	def indexPage(self, url, title, words):
 		""" Inputs are a url (string), title (string), Dict<word (string), tuple(wordCount (int), excerpt(string)>
 			Returns 0 if no problem, 1 if error storing info, 2 if database is not connected
 		"""
+		# grab connection from pool
+		self.conn = mysql.connector.connect(pool_name="thePool")
+		
 		# check connection
 		if self.conn.is_connected():			
 			
@@ -77,11 +77,17 @@ class DataStore:
 				 might be able to go to less restrictive... '''
 				self.conn.start_transaction(isolation_level='SERIALIZABLE')
 
+				# create a cursor to call url procedure
+				self.cursorUrl = self.conn.cursor()
+
 				# results holds the args sent into callproc but contains an output with the uid
 				# that is needed in the next mysql procedure call
 				results = self.cursorUrl.callproc('PRC_STORE_URL_TTL', args)
 				
 				''' NEXT VERSION HAVE MYSQL ITERATE THROUGH LIST OF WORDS '''
+
+				# create a cursor to call store word procedure
+				self.cursorWord = self.conn.cursor()
 
 				# store word, wordcount and excerpt
 				for word, wordData in words.items():
@@ -96,9 +102,19 @@ class DataStore:
 				# call commit
 				self.conn.commit()
 
+				# close cursors
+				self.cursorUrl.close()
+				self.cursorWord.close()
+
+				# return connection back to pool
+				self.conn.close()
+
 				return 0
 
 			except mysql.connector.Error as err:
+				# return connection back to pool
+				self.conn.close() 
+
 				print(err)
 				return 1 # maybe return error code...
 		else:
@@ -106,7 +122,7 @@ class DataStore:
 			return 2
 			
 			
-	# List<word> -> List<(url, title, excerpt)>
+	# List<word> -> List<(url, title, excerpt, word count)>
 	def search(self, words):
 		""" Inputs are a list of words
 			Returns:
@@ -114,6 +130,9 @@ class DataStore:
 				list containing '1' and the error if error storing info, 
 				list containing '2' and 'Db not connected' if database is not connected
 		"""
+		# grab connection from pool
+		self.conn = mysql.connector.connect(pool_name="thePool")
+		
 		# check connection
 		if self.conn.is_connected():			
 			
@@ -121,10 +140,11 @@ class DataStore:
 
 			try:
 
+				
+				self.cursorRetrieve = self.conn.cursor()
+
 				for word in words:
-					print(word)
 					# find word in database and return a row
-					# pass list of words to database
 					self.cursorRetrieve.callproc('PRC_FIND_WRD', (word,))
 
 					# add result to return list 
@@ -142,20 +162,20 @@ class DataStore:
 					print(result.fetchall())
 					#retList.append(result)
 				'''
+				# close cursor
+				self.cursorRetrieve.close()
+
+				# return connection back to pool
+				self.conn.close()
+
 				return retList
 
 			except mysql.connector.Error as err:
+				# return connection back to pool
+				self.conn.close()
+
 				rList = [1, err]
 				return rList # maybe return error code...
 		else:
 			rList = [2, "Db not connected"]
 			return rList
-
-		
-	def closeConnection(self):
-		self.cursorUrl.close()
-		self.cursorWord.close()
-		self.cursorRetrieve.close()
-		print("cursor closed")
-		self.conn.close()
-		print("connection closed")
