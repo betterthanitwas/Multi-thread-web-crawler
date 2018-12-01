@@ -33,6 +33,13 @@ class DataStore:
 	def indexPage(self, url, title, words):
 		""" Inputs are a url (string), title (string), Dict<word (string), tuple(wordCount (int), excerpt(string)>
 		"""
+
+		# check lengths: URL <= 255 title <= 100 
+		url = str(url[0:255])
+		title = str(title[0:100])
+		arg_url = (url, title, 0)
+
+
 		# with automatically calls acquire and release upon entering and exiting block
 		with self.pool_sema:
 
@@ -46,44 +53,35 @@ class DataStore:
 				# turn off autocommit
 				conn.autocommit = False
 
-				# check lengths: URL <= 255 title <= 100 
-				url = str(url[0:255])
-				title = str(title[0:100])
-				
-				# store url & title 
-				args = (url, title, 0)
-
 				# start a transaction
-				''' SERIALIZABLE is restrictive and does nont all dirty, nonrepeatable or phantom reads
+				''' SERIALIZABLE is restrictive and does not allow dirty, nonrepeatable or phantom reads
 				 might be able to go to less restrictive... '''
 				conn.start_transaction(isolation_level='SERIALIZABLE')
 
-				# create a cursor to call url procedure
-				cursor_url = conn.cursor()
+				# create a cursor to call procedure
+				cursor = conn.cursor()
+					
+				# call procedure to add url, title
+				results = cursor.callproc('PRC_STORE_URL_TTL', arg_url)
 
-				# results holds the args sent into callproc but contains an output with the uid
-				# that is needed in the next mysql procedure call
-				results = cursor_url.callproc('PRC_STORE_URL_TTL', args)
 
-				# create a cursor to call store word procedure
-				cursor_word = conn.cursor()
-
-				# store word, wordcount and excerpt
+				# word, wordcount and excerpt to arg list
 				for word, word_data in words.items():
 					# check lengths: Word <= 45, excerpt <= 150
 					word = str(word[0:45])
 					excerpt = str(word_data[1][0:150])
 					
-					# store word id, word, word count and excerpt into db
-					args = (word, results[2], word_data[0], excerpt)
-					cursor_word.callproc('PRC_STORE_WRD', args)
+					# add word, url id, word count and excerpt to args
+					arg_list = (word, results[2], word_data[0], excerpt)
+					# add word info to Db
+					cursor.callproc('PRC_STORE_WORD', arg_list)
+					
 					
 				# call commit
 				conn.commit()
-
+				
 				# close cursors
-				cursor_url.close()
-				cursor_word.close()
+				cursor.close()
 
 
 			except mysql.connector.Error as err:
