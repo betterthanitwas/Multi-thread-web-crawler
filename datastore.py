@@ -61,7 +61,8 @@ class DataStore:
 				# create a cursor to call procedure
 				cursor_URL = conn.cursor()
 					
-				# call procedure to add url, title
+				# results holds the args sent into callproc but contains an output with the uid
+				# that is needed in the next mysql procedure call
 				results = cursor_URL.callproc('PRC_STORE_URL_TTL', arg_url)
 
 				cursor_word = conn.cursor()
@@ -82,7 +83,8 @@ class DataStore:
 				conn.commit()
 				
 				# close cursors
-				cursor.close()
+				cursor_URL.close()
+				cursor_word.close()
 
 
 			except mysql.connector.Error as err:
@@ -134,3 +136,20 @@ class DataStore:
 			conn.close()
 
 			return return_list
+
+def main():
+	ds = DataStore('config.ini')
+
+	url = 'www.Thisisatest.com'
+	title = 'Test Title'
+	dictWord = {'test1': (50, "this test1 word is a test excerpt"),
+				'test2': (10, "this test2 : excerpt")}
+	ds.indexPage(url, title, dictWord)
+		
+	wordList = ['test1', 'test2']
+	r = ds.search(wordList)
+	for t in r:
+		print(t)
+		
+if __name__ == "__main__":
+	main() 
