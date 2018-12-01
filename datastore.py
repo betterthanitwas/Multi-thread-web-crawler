@@ -64,7 +64,8 @@ class DataStore:
 				# call procedure to add url, title
 				results = cursor_URL.callproc('PRC_STORE_URL_TTL', arg_url)
 
-				cursor_word = conn.cursor
+				cursor_word = conn.cursor()
+
 				# word, wordcount and excerpt to arg list
 				for word, word_data in words.items():
 					# check lengths: Word <= 45, excerpt <= 150
