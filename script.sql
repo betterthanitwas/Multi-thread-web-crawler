@@ -1,6 +1,9 @@
 # create logical group of DB objects in DB (pg 241)
 CREATE SCHEMA WEBCRAWL;
 
+# tell mysql which db to use
+USE WEBCRAWL;
+
 CREATE TABLE SITE (
 SITE_ID		BIGINT UNSIGNED		NOT NULL	UNIQUE	AUTO_INCREMENT,
 SITE_URL	VARCHAR(255)		UNIQUE,	# make sure the URL is unique
@@ -63,3 +66,4 @@ CREATE PROCEDURE PRC_FIND_WRD (IN WORD_W VARCHAR(45))
 	END |
 
 delimiter ;
+
