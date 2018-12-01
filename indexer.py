@@ -3,10 +3,12 @@ from collections import Counter
 
 excerpt_max_size = 100
 
+whitespace_regex = re.compile(r"\s+")
 word_regex = re.compile(r"\w+")
 excerpt_regex = re.compile(r"(?<=\s)\S((.*)\S)?(?=\s)", re.DOTALL)
 
 def index_text(text):
+    text = whitespace_regex.sub(" ", text).strip()
     text = " " + text + " "
     lowercase_text = text.lower()
     words = Counter(word_regex.findall(lowercase_text))
