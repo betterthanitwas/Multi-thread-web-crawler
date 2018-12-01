@@ -59,12 +59,12 @@ class DataStore:
 				conn.start_transaction(isolation_level='SERIALIZABLE')
 
 				# create a cursor to call procedure
-				cursor = conn.cursor()
+				cursor_URL = conn.cursor()
 					
 				# call procedure to add url, title
-				results = cursor.callproc('PRC_STORE_URL_TTL', arg_url)
+				results = cursor_URL.callproc('PRC_STORE_URL_TTL', arg_url)
 
-
+				cursor_word = conn.cursor
 				# word, wordcount and excerpt to arg list
 				for word, word_data in words.items():
 					# check lengths: Word <= 45, excerpt <= 150
@@ -74,7 +74,7 @@ class DataStore:
 					# add word, url id, word count and excerpt to args
 					arg_list = (word, results[2], word_data[0], excerpt)
 					# add word info to Db
-					cursor.callproc('PRC_STORE_WORD', arg_list)
+					cursor_word.callproc('PRC_STORE_WORD', arg_list)
 					
 					
 				# call commit
