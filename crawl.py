@@ -8,7 +8,7 @@ from urlqueue import UrlQueue
 from datastore import DataStore
 import indexer
 
-data_store = DataStore('localhost', 'webcrawl', 'root', '')
+data_store = DataStore('config.ini')
 
 def crawler_thread(domain):
     rp = urllib.robotparser.RobotFileParser()

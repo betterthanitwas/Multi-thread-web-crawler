@@ -3,8 +3,7 @@ from datastore import DataStore
 from renderhtml import render_html
 import re
 
-data_store = DataStore('localhost', 'webcrawl', 'root', '')
-data_store.connect()
+data_store = DataStore('config.ini')
 
 app = Flask(__name__)
 
