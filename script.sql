@@ -1,4 +1,3 @@
-DROP SCHEMA WEBCRAWL;
 # create logical group of DB objects in DB (pg 241), also change char set
 CREATE SCHEMA WEBCRAWL CHARACTER SET UTF8MB4;
 
