@@ -47,28 +47,23 @@ class DataStore:
 			conn = mysql.connector.connect(pool_name="thePool",
 												pool_size=self.max_connections, # 5 is the default
 												**self.db_config)
-
-			try:
 				
-				# turn off autocommit
-				conn.autocommit = False
+			# turn off autocommit
+			conn.autocommit = False
 
-				# start a transaction
-				''' SERIALIZABLE is restrictive and does not allow dirty, nonrepeatable or phantom reads
-				 might be able to go to less restrictive...'''
-				conn.start_transaction(isolation_level='SERIALIZABLE')
+			# create a cursor to call procedure
+			cursor_URL = conn.cursor()
 
-				# create a cursor to call procedure
-				cursor_URL = conn.cursor()
-					
+			try:	
 				# results holds the args sent into callproc but contains an output with the uid
 				# that is needed in the next mysql procedure call
 				results = cursor_URL.callproc('PRC_STORE_URL_TTL', arg_url)
 
+				cursor_URL.close()
+
+				
 				cursor_word = conn.cursor()
-
-				excerpt_arg_list = []
-
+				cursor_excerpt = conn.cursor()
 				# word, wordcount and excerpt to arg list
 				for word, word_data in words.items():
 					# check lengths: Word <= 45, excerpt <= 150
@@ -77,29 +72,19 @@ class DataStore:
 					
 					# add word info to Db
 					wid = 0
-					arg_word = (wid, word)
-					wid = cursor_word.callproc('PRC_STORE_WORD', arg_word)
+					arg_word = (word, results[2], word_data[0], excerpt)
 
-					excerpt_arg = (results[2], wid[0], word_data[0], excerpt)
-					excerpt_arg_list.append(excerpt_arg)
-				
+					try:
+						cursor_word.callproc('PRC_STORE_WORD', arg_word)
+					except mysql.connector.Error as err:
+						print(err)
 
-				cursor_excerpt = conn.cursor()
-
-				query = """INSERT INTO EXCERPT (SITE_ID, WORD_ID, EXCERPT_WRD_AMT_SITE, EXCERPT_PHRASE) VALUES(%s, %s, %s, %s);"""
-				cursor_excerpt.executemany(query, excerpt_arg_list)
-
-				# call commit
-				conn.commit()
-				
 				# close cursors
-				cursor_URL.close()
 				cursor_word.close()
 				cursor_excerpt.close()
 
-
 			except mysql.connector.Error as err:
-				print(err)
+						print(err)
 			
 			# return connection back to pool
 			conn.close()
