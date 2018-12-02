@@ -1,5 +1,6 @@
 import re
 from collections import Counter
+from unicodedata import normalize
 
 excerpt_max_size = 100
 
@@ -8,6 +9,7 @@ word_regex = re.compile(r"\w+")
 excerpt_regex = re.compile(r"(?<=\s)\S((.*)\S)?(?=\s)", re.DOTALL)
 
 def index_text(text):
+    text = normalize("NFKC", text)
     text = whitespace_regex.sub(" ", text).strip()
     text = " " + text + " "
     lowercase_text = text.lower()
