@@ -136,20 +136,3 @@ class DataStore:
 			conn.close()
 
 			return return_list
-
-def main():
-	ds = DataStore('config.ini')
-
-	url = 'www.Thisisatest.com'
-	title = 'Test Title'
-	dictWord = {'test1': (50, "this test1 word is a test excerpt"),
-				'test2': (10, "this test2 : excerpt")}
-	ds.indexPage(url, title, dictWord)
-		
-	wordList = ['test1', 'test2']
-	r = ds.search(wordList)
-	for t in r:
-		print(t)
-		
-if __name__ == "__main__":
-	main() 
