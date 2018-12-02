@@ -55,8 +55,8 @@ class DataStore:
 
 				# start a transaction
 				''' SERIALIZABLE is restrictive and does not allow dirty, nonrepeatable or phantom reads
-				 might be able to go to less restrictive... 
-				conn.start_transaction(isolation_level='SERIALIZABLE')'''
+				 might be able to go to less restrictive...'''
+				conn.start_transaction(isolation_level='SERIALIZABLE')
 
 				# create a cursor to call procedure
 				cursor_URL = conn.cursor()
@@ -99,7 +99,6 @@ class DataStore:
 
 
 			except mysql.connector.Error as err:
-				conn.rollback()
 				print(err)
 			
 			# return connection back to pool
