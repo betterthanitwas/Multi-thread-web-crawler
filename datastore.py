@@ -67,24 +67,35 @@ class DataStore:
 
 				cursor_word = conn.cursor()
 
+				excerpt_arg_list = []
+
 				# word, wordcount and excerpt to arg list
 				for word, word_data in words.items():
 					# check lengths: Word <= 45, excerpt <= 150
 					word = str(word[0:45])
 					excerpt = str(word_data[1][0:150])
 					
-					# add word, url id, word count and excerpt to args
-					arg_list = (word, results[2], word_data[0], excerpt)
 					# add word info to Db
-					cursor_word.callproc('PRC_STORE_WORD', arg_list)
-					
-					
+					wid = 0
+					arg_word = (wid, word)
+					wid = cursor_word.callproc('PRC_STORE_WORD', arg_word)
+
+					excerpt_arg = (results[2], wid[0], word_data[0], excerpt)
+					excerpt_arg_list.append(excerpt_arg)
+				
+
+				cursor_excerpt = conn.cursor()
+
+				query = """INSERT INTO EXCERPT (SITE_ID, WORD_ID, EXCERPT_WRD_AMT_SITE, EXCERPT_PHRASE) VALUES(%s, %s, %s, %s);"""
+				cursor_excerpt.executemany(query, excerpt_arg_list)
+
 				# call commit
 				conn.commit()
 				
 				# close cursors
 				cursor_URL.close()
 				cursor_word.close()
+				cursor_excerpt.close()
 
 
 			except mysql.connector.Error as err:
