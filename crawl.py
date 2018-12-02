@@ -19,6 +19,7 @@ def crawler_thread(domain):
         time.sleep(.5)
         url = queue.take_url(domain)
         if url != None and rp.can_fetch("*", url):
+            print(url)
             r  = requests.get(url)
             data = r.text
             soup = BeautifulSoup(data, features="html.parser")
