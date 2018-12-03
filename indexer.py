@@ -2,7 +2,7 @@ import re
 from collections import Counter
 from unicodedata import normalize
 
-excerpt_max_size = 100
+excerpt_max_size = 150
 
 whitespace_regex = re.compile(r"\s+")
 word_regex = re.compile(r"\w+")
