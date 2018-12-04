@@ -121,7 +121,7 @@ class DataStore:
 					# add result to return list 
 					for result in cursor_retrieve.stored_results():
 						#print(result.fetchall())
-						return_list.append(tuple(result))
+						return_list = list(result)
 
 				# close cursor
 				cursor_retrieve.close()
