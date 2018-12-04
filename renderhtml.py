@@ -8,28 +8,28 @@ def render_html(results, search, search_words):
     return f"""<!doctype html>
 <title>CLocKPJWaRP: {escape(search)}</title>
 <style>
-h1 {
+h1 {{
 	margin: 0;
 	font-family: monaco;
-}
-h2 {
+}}
+h2 {{
 	font-size: 1.25em;
 	margin-bottom: 0;
-}
-p {
+}}
+p {{
 	margin-top: 0;
-}
+}}
 
-input{
+input{{
 	border-radius: 15px;
 	border: solid;
 	border-width: thin;
-}
+}}
 
-#button{
+#button{{
 	background-color: blue;
 	color: white;
-}
+}}
 
 </style>
 <link rel="search" type="application/opensearchdescription+xml" title="CLocKPJWaRP" href="opensearch.xml">
