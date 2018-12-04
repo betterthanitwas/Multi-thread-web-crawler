@@ -46,7 +46,9 @@ class DataStore:
 			# use connection pool implicitly
 			conn = mysql.connector.connect(pool_name="thePool",
 												pool_size=self.max_connections, # 5 is the default
-												**self.db_config)
+												**self.db_config,
+												charset = "UTF8MB4",
+												collate = "COLLATE UTF8MB4_BIN")
 				
 			# turn off autocommit
 			conn.autocommit = False
@@ -70,7 +72,7 @@ class DataStore:
 					word = str(word[0:45])
 					excerpt = str(word_data[1][0:150])
 					
-					# add word info to Db
+					# add word, UID, count, excerpt to Db
 					arg_word = (word, results[2], word_data[0], excerpt)
 
 					try:
