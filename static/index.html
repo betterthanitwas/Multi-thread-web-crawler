@@ -3,12 +3,30 @@
 	<head>
 		<title>CLocKPJWaRP</title>
 		<style>
-			body {
+					body {
 				text-align: center;
+				font-family: monaco;
 			}
 			body, input {
 				font-size: 32px;
 			}
+  
+                        input{
+	                        border-radius: 15px;
+	                        background: white;
+	                        border: solid;
+                        }
+                        #button{
+	                        background-color: blue;
+	                        border-radius: 10px;
+	                        color: white;
+	                        border-color: white;
+	                        padding: 5px 15px;
+	
+                        }	
+                        #button.value{
+	                       font-size: 10px;
+                        }	
 		</style>
 		<link rel="search" type="application/opensearchdescription+xml" title="CLocKPJWaRP" href="opensearch.xml">
 	</head>
@@ -16,7 +34,7 @@
 		<h1>CLocKPJWaRP</h1>
 		<form action="search" method="get">
 			<input type="search" name="q">
-			<input type="submit" value="Find it">
+			<input id="button" type="submit" value="Find it">
 		</form>
 	</body>
 </html>
