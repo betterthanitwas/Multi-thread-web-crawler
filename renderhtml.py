@@ -26,5 +26,5 @@ p {{
 	<input type="search" name="q" value="{escape(search)}">
 	<input type="submit" value="Find it">
 </form>
-""" + '\n'.join(f'''<h2><a href="{escape(url)}">{bold_search_terms(escape(title))}</a></h2>
-<p>{bold_search_terms(escape(excerpt))}</p>''' for (url, title, excerpt) in results)
+""" + '\n'.join(f'''<h2><a href="{escape(str(url, encoding="UTF-8"))}">{bold_search_terms(escape(str(title, encoding="UTF-8")))}</a></h2>
+<p>{bold_search_terms(escape(str(excerpt, encoding="UTF-8")))}</p>''' for (url, title, excerpt) in results)
