@@ -19,8 +19,8 @@ PRIMARY KEY (WORD_ID))
 ENGINE = INNODB;
 
 CREATE TABLE EXCERPT (
-SITE_ID					BIGINT UNSIGNED		UNIQUE,
-WORD_ID					BIGINT UNSIGNED		UNIQUE, # try adding index here to see if its faster on return...
+SITE_ID					BIGINT UNSIGNED,
+WORD_ID					BIGINT UNSIGNED, # try adding index here to see if its faster on return...
 EXCERPT_WRD_AMT_SITE	INT,
 EXCERPT_PHRASE			VARCHAR(150),
 EXCERPT_WORD			VARCHAR(45),	#test
