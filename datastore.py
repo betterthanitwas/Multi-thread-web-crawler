@@ -71,7 +71,6 @@ class DataStore:
 					excerpt = str(word_data[1][0:150])
 					
 					# add word info to Db
-					wid = 0
 					arg_word = (word, results[2], word_data[0], excerpt)
 
 					try:
