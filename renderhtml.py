@@ -21,7 +21,7 @@ p {{
 }}
 
 input{{
-	border-radius: 15px;
+	border-radius: 5px;
 	border: solid;
 	border-width: thin;
 }}
