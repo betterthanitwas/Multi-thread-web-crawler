@@ -13,9 +13,9 @@ data_store = DataStore('config.ini')
 
 def fetch(url, **kwargs):
     try:
-        return requests.get(url, **kwargs)
+        return requests.get(url, headers={"User-Agent": "CLocKPJWaRPbot/1.0; (+https://clockpjwarp.com/)"}, **kwargs)
     except:
-        return requests.get(url, **kwargs)
+        return requests.get(url, headers={"User-Agent": "CLocKPJWaRPbot/1.0; (+https://clockpjwarp.com/)"}, **kwargs)
 
 concurrency_limit = BoundedSemaphore(20)
 
@@ -41,7 +41,7 @@ def crawler_thread(domain):
                     for link in soup.find_all('a'):
                         next_link = link.get('href')
                         if next_link != None:
-                            if rp.can_fetch("*", next_link):
+                            if rp.can_fetch("CLocKPJWaRPbot", next_link):
                                 queue.add_url(urldefrag(urljoin(url, next_link)).url)
                     del soup
                     data_store.indexPage(url, title, words)
