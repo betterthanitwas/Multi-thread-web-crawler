@@ -48,7 +48,7 @@ class DataStore:
 												pool_size=self.max_connections, # 5 is the default
 												**self.db_config,
 												charset = "utf8mb4",
-												collate = "utf8mb4_bin")
+												collation = "utf8mb4_bin")
 				
 			# turn off autocommit
 			conn.autocommit = False
