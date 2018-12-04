@@ -108,9 +108,10 @@ class DataStore:
 												pool_size=self.max_connections, # 5 is the default
 												**self.db_config)
 
-			return_list = []
-
 			try:
+
+				return_list = []
+
 				# create a cursor to call search procedure
 				cursor_retrieve = conn.cursor()
 
@@ -118,10 +119,9 @@ class DataStore:
 					# find word in database and return a row
 					cursor_retrieve.callproc('PRC_FIND_WRD', (word,))
 
-					# add result to return list 
-					for result in cursor_retrieve.stored_results():
-						#print(result.fetchall())
-						return_list = list(result)
+				for row in cursor_retrieve.stored_results()
+					return_list += row.fetchall()
+				
 
 				# close cursor
 				cursor_retrieve.close()
