@@ -47,8 +47,8 @@ class DataStore:
 			conn = mysql.connector.connect(pool_name="thePool",
 												pool_size=self.max_connections, # 5 is the default
 												**self.db_config,
-												charset = "UTF8MB4",
-												collate = "COLLATE UTF8MB4_BIN")
+												charset = "utf8mb4",
+												collate = "utf8mb4_bin")
 				
 			# turn off autocommit
 			conn.autocommit = False
