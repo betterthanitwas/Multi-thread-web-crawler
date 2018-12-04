@@ -119,9 +119,8 @@ class DataStore:
 					# find word in database and return a row
 					cursor_retrieve.callproc('PRC_FIND_WRD', (word,))
 
-				for row in cursor_retrieve.stored_results()
+				for row in cursor_retrieve.stored_results():
 					return_list += row.fetchall()
-				
 
 				# close cursor
 				cursor_retrieve.close()
