@@ -115,11 +115,9 @@ class DataStore:
 				# create a cursor to call search procedure
 				cursor_retrieve = conn.cursor()
 				
-				words = set(words)
-				cursor_retrieve.callproc('PRC_FIND_WRD', (words,))
-				'''for word in words:
-					# find word in database and return a row
-					cursor_retrieve.callproc('PRC_FIND_WRD', (word,))'''
+				format_strings = ','.joinn(set(words))
+
+				cursor_retrieve.callproc('PRC_FIND_WRD', (format_strings,))
 
 				for row in cursor_retrieve.stored_results():
 					return_list += row.fetchall()
