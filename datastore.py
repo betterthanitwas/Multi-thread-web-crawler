@@ -115,7 +115,7 @@ class DataStore:
 				# create a cursor to call search procedure
 				cursor_retrieve = conn.cursor()
 				
-				format_strings = ','.joinn(set(words))
+				format_strings = ','.join(set(words))
 
 				cursor_retrieve.callproc('PRC_FIND_WRD', (format_strings,))
 
