@@ -115,12 +115,17 @@ class DataStore:
 				# create a cursor to call search procedure
 				cursor_retrieve = conn.cursor()
 				
-				format_strings = ','.join(set(words))
+				words = tuple(set(words))
 
-				cursor_retrieve.callproc('PRC_FIND_WRD', (format_strings,))
+				format_strings = ','.join(['%s'] * len(words))
+				cursor_retrieve.execute("SELECT SITE_URL, SITE_TITLE, EXCERPT_PHRASE \
+					FROM WORD JOIN EXCERPT USING (WORD_ID) JOIN SITE USING (SITE_ID) \
+					WHERE		WORD_WORD IN (%s) \
+					ORDER BY	EXCERPT_WRD_AMT_SITE DESC \
+					LIMIT		100;" %format_strings, words)
 
-				for row in cursor_retrieve.stored_results():
-					return_list += row.fetchall()
+				for row in cursor_retrieve:
+					return_list.append(tuple(row))
 
 				# close cursor
 				cursor_retrieve.close()
