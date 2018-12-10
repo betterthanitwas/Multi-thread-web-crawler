@@ -10,7 +10,7 @@ def render_html(results, search, search_words):
 <style>
 h1 {{
 	margin: 0;
-	font-family: monaco;
+	font-family: monaco, lucida console, monospace;
 }}
 h2 {{
 	font-size: 1.25em;
