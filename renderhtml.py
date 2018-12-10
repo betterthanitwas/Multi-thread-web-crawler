@@ -31,30 +31,14 @@ input{{
 	color: white;
 }}
 
-a.home:link {{
-  color: black;
-  text-decoration: none;
+a.home {{
+	color: black;
+	text-decoration: none;
 }}
-a.home:visited {{
-  color: black;
-
-  text-decoration: none;
-}}
-a.home:hover {{
-  color: black;
-
-  text-decoration: none;
-}}
-a.home:active {{
-  color: black;
-
-  text-decoration: none;
-}}
-
 </style>
 <link rel="search" type="application/opensearchdescription+xml" title="CLocKPJWaRP" href="opensearch.xml">
 
-<h1> <a href="https://clockpjwarp.com" class="home"CLocKPJWaRP</h1>
+<h1><a href="https://clockpjwarp.com" class="home">CLocKPJWaRP</a></h1>
 <form action="search" method="get">
 	<input type="search" name="q" value="{escape(search)}">
 	<input type="submit" value="Find it" id="button">
