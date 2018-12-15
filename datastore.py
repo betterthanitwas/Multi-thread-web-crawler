@@ -118,10 +118,11 @@ class DataStore:
 				words = tuple(set(words))
 
 				format_strings = ','.join(['%s'] * len(words))
-				cursor_retrieve.execute("SELECT SITE_URL, SITE_TITLE, EXCERPT_PHRASE \
+				cursor_retrieve.execute("SELECT SITE_URL, SITE_TITLE, ANY_VALUE(EXCERPT_PHRASE) \
 					FROM WORD JOIN EXCERPT USING (WORD_ID) JOIN SITE USING (SITE_ID) \
 					WHERE		WORD_WORD IN (%s) \
-					ORDER BY	EXCERPT_WRD_AMT_SITE DESC \
+					GROUP BY SITE_ID \
+					ORDER BY	SUM(EXCERPT_WRD_AMT_SITE) DESC \
 					LIMIT		100;" %format_strings, words)
 
 				for row in cursor_retrieve:
