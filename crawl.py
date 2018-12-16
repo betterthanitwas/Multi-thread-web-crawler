@@ -56,3 +56,7 @@ queue = UrlQueue(crawler_thread, thread_count)
 queue.add_url("https://en.wikipedia.org/wiki/Main_Page")
 queue.add_url("https://stackoverflow.com/")
 queue.add_url("http://people.nnu.edu/blmyers/")
+
+while True:
+    time.sleep(60)
+    print(queue.get_log_stats())

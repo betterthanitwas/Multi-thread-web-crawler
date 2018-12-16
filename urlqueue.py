@@ -7,14 +7,14 @@ class UrlQueue:
         self.thread_count = thread_count
         self.queues = [Queue() for _ in range(thread_count)]
         self.lock = Lock()
-        self.visited_links = set()
+        self.seen_urls = set()
         for i in range(thread_count):
             Thread(None, start_crawler_thread, f"crawler {i}", (i,)).start()
 
     def add_url(self, url):
         with self.lock:
-            if url not in self.visited_links:
-                self.visited_links.add(url)
+            if url not in self.seen_urls:
+                self.seen_urls.add(url)
             else:
                 return
         thread_id = hash(urlparse(url).hostname) % self.thread_count
@@ -22,3 +22,8 @@ class UrlQueue:
 
     def take_url(self, thread_id):
         return self.queues[thread_id].get(True)
+
+    def get_log_stats(self):
+        with self.lock:
+            seen_url_count = len(self.seen_urls)
+        return f"Seen {seen_url_count} urls, queue lengths {[queue.qsize() for queue in self.queues]}"
