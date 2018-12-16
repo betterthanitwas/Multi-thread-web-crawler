@@ -3,27 +3,22 @@ from queue import Queue
 from urllib.parse import urlparse
 
 class UrlQueue:
-    def __init__(self, start_crawler_thread):
-        self.start_crawler_thread = start_crawler_thread
-        self.queues = {}
+    def __init__(self, start_crawler_thread, thread_count):
+        self.thread_count = thread_count
+        self.queues = [Queue() for _ in range(thread_count)]
         self.lock = Lock()
         self.visited_links = set()
+        for i in range(thread_count):
+            Thread(None, start_crawler_thread, f"crawler {i}", (i,)).start()
 
     def add_url(self, url):
         with self.lock:
             if url not in self.visited_links:
                 self.visited_links.add(url)
-                domain = urlparse(url).hostname
-                if not domain in self.queues:
-                    self.queues[domain] = Queue()
-                    Thread(None, self.start_crawler_thread, domain, (domain,)).start()
-                self.queues[domain].put(url)
-
-    # Returns either a URL or None. If it returns None, the calling thread should terminate.
-    def take_url(self, domain):
-        with self.lock:
-            if self.queues[domain].empty(): 
-                del self.queues[domain]
-                return None
             else:
-                return self.queues[domain].get()
+                return
+        thread_id = hash(urlparse(url).hostname) % self.thread_count
+        self.queues[thread_id].put(url)
+
+    def take_url(self, thread_id):
+        return self.queues[thread_id].get(True)
