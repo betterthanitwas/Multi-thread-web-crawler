@@ -19,28 +19,26 @@ h2 {{
 p {{
 	margin-top: 0;
 }}
-
 input{{
 	border-radius: 5px;
-	border: solid;
-	border-width: thin;
+	border: solid thin black;
 }}
-
 #button{{
 	background-color: blue;
+	border-color: blue;
 	color: white;
 }}
-
 a.home {{
 	color: black;
 	text-decoration: none;
 }}
 </style>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="search" type="application/opensearchdescription+xml" title="CLocKPJWaRP" href="opensearch.xml">
 
 <h1><a href="https://clockpjwarp.com" class="home">CLocKPJWaRP</a></h1>
 <form action="search" method="get">
-	<input type="search" name="q" value="{escape(search)}">
+	<input type="text" name="q" value="{escape(search)}">
 	<input type="submit" value="Find it" id="button">
 </form>
 """ + '\n'.join(f'''<h2><a href="{escape(str(url, encoding="UTF-8"))}">{bold_search_terms(escape(str(title, encoding="UTF-8")))}</a></h2>
