@@ -21,6 +21,7 @@ DROP SCHEMA WEBCRAWL;
 EOF
 sudo mysql < script.sql
 python3 crawl.py
+sudo mysql < create-idf.sql
 ```
 
 To run the server:

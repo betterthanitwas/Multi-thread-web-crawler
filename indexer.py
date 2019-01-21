@@ -13,7 +13,9 @@ def index_text(text):
     text = whitespace_regex.sub(" ", text).strip()
     text = " " + text + " "
     lowercase_text = text.lower()
-    words = Counter(word_regex.findall(lowercase_text))
+    word_list = word_regex.findall(lowercase_text)
+    words = Counter(word_list)
+    word_count = len(word_list)
     def get_excerpt(word):
         if len(word) > excerpt_max_size:
             return ""
@@ -24,4 +26,4 @@ def index_text(text):
         end_index = word_end_index + padding
         excerpt = excerpt_regex.search(text, start_index, end_index)
         return excerpt.group() if excerpt else ""
-    return {word: (count, get_excerpt(word)) for (word, count) in words.items()}
+    return {word: (count / word_count, get_excerpt(word)) for (word, count) in words.items()}
