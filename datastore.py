@@ -51,7 +51,7 @@ class DataStore:
 												collation = "utf8mb4_bin")
 				
 			# turn off autocommit
-			conn.autocommit = False
+			#conn.autocommit = False
 
 			# create a cursor to call procedure
 			cursor_URL = conn.cursor()
